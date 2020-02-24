@@ -63,7 +63,7 @@ func truncate(s string, max int, hint string, append bool) string {
 	return hint + s[max-hintLen+1:]
 }
 
-// Copy returns a shallow copy of the source slice.
+// Copy returns a copy of the source slice.
 func Copy(src []string) (dst []string) {
 	dst = make([]string, len(src))
 	copy(dst, src)

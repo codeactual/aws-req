@@ -61,7 +61,9 @@ const (
 )
 
 func main() {
-	err := handler_cobra.NewHandler(&Handler{}).Execute()
+	err := handler_cobra.NewHandler(&Handler{
+		Session: &handler.DefaultSession{},
+	}).Execute()
 	if err != nil {
 		panic(errors.WithStack(err))
 	}
@@ -69,7 +71,7 @@ func main() {
 
 // Handler defines the sub-command flags and logic.
 type Handler struct {
-	handler.IO
+	handler.Session
 
 	Body    string `usage:"HTTP body"`
 	Header  string `usage:"Headers in JSON format"`
@@ -106,8 +108,8 @@ func (h *Handler) BindFlags(cmd *cobra.Command) []string {
 // Run performs the sub-command logic.
 //
 // It implements cli/handler/cobra.Handler.
-func (h *Handler) Run(ctx context.Context, args []string) {
-	u, parseErr := url.Parse(args[0])
+func (h *Handler) Run(ctx context.Context, input handler.Input) {
+	u, parseErr := url.Parse(input.Args[0])
 	h.ExitOnErr(parseErr, "failed to parse URL", 1)
 	urlStr := u.String()
 
